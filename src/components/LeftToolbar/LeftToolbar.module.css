@@ -1,0 +1,8 @@
+.toolbarContainer {
+    width: 400px;
+    height: 100%;
+    text-align: center;
+    background-color: white;
+    border: 1px #27645E solid;
+    border-bottom-right-radius: 5px;
+}

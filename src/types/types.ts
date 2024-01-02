@@ -50,11 +50,31 @@ type CardDataType = {
     objects: ObjectType[];
 };
 
+const isArtType = (object: ObjectType): boolean => {
+    return 'artSrc' in object;
+};
+
+const isImageType = (object: ObjectType): boolean => {
+    return 'imageSrc' in object;
+};
+
+const isTextType = (object: ObjectType): boolean => {
+    return (
+        'content' in object &&
+        'fontSize' in object &&
+        'fontColor' in object &&
+        'fontFamily' in object
+    );
+};
+
 export type {
     ImageType,
     TextType,
     ArtType,
+    ObjectType,
     FilterType,
     CanvasType,
     CardDataType,
 };
+
+export { isTextType, isArtType, isImageType };

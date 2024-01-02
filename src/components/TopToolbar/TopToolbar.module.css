@@ -1,0 +1,59 @@
+.toolbarHeader {
+    background-color: #AEBBAB;
+    height: min-content;
+    width: 100%;
+    border-bottom: 1px #27645E solid;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.toolbarFooter {
+    background-color: white;
+    height: min-content;
+    width: 100%;
+    border-bottom: 1px #27645E solid;
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 50px;
+    align-items: center;
+}
+
+.toolbarContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.input {
+    display: none;
+}
+
+.inputLabel {
+    border-radius: 2px;
+    border: 1px #27645E solid;
+    font-size: 18px;
+    padding-inline: 15px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.importArtObjectContainer {
+
+}
+
+.importArtObjectTitle {
+    text-align: center;
+}
+
+.previewArtObjectsBlock {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 5px;
+}
+
+.previewArt {
+    max-height: 25px;
+    max-width: 25px;
+    cursor: pointer;
+}
