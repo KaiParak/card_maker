@@ -1,54 +1,13 @@
 import React, { useState } from 'react';
-import {
-    ArtType,
-    CardDataType,
-    ImageType,
-    ObjectType,
-    TextType,
-} from '../types/types';
+import { CardDataType, FilterType, ObjectType } from '../types/types';
 import { TopToolbar } from '../components/TopToolbar/TopToolbar';
 import { LeftToolbar } from '../components/LeftToolbar/LeftToolbar';
 import { Canvas } from '../components/Canvas/Canvas';
 import { ObjectView } from '../components/ObjectView/ui/ObjectView';
 import classes from './CardEditPage.module.css';
-import circle from '../arts/circle.svg';
+import { initialObjectList } from '../data/initialObjectList';
 
 const CardEditPage = () => {
-    const textObject: TextType = {
-        id: 'text',
-        isSelected: true,
-        width: 100,
-        height: 100,
-        x: 10,
-        y: 10,
-        content: 'sdjsdjisdsid',
-        fontFamily: 'Arial',
-        fontSize: 18,
-        fontColor: 'black',
-        decorations: ['underline'],
-    };
-
-    const imageObject: ImageType = {
-        id: 'image',
-        width: 400,
-        height: 600,
-        x: 300,
-        y: 400,
-        isSelected: true,
-        imageSrc:
-            'https://i.pinimg.com/originals/46/ef/99/46ef998c64e221407bb5ac3c17e5d1bf.jpg',
-    };
-
-    const artObject: ArtType = {
-        id: 'image',
-        width: 400,
-        height: 600,
-        x: 50,
-        y: 100,
-        isSelected: true,
-        artSrc: circle,
-    };
-
     const [cardData, setCardData] = useState<CardDataType>({
         filter: {
             r: 255,
@@ -60,17 +19,84 @@ const CardEditPage = () => {
             width: 800,
             height: 600,
         },
-        objects: [textObject, imageObject, artObject],
+        objects: initialObjectList,
     });
+
+    const setObject = (object: ObjectType) => {
+        setCardData({
+            ...cardData,
+            objects: cardData.objects.map((obj: ObjectType): ObjectType => {
+                if (object.id === obj.id) {
+                    return { ...obj, ...object };
+                }
+                return obj;
+            }),
+        });
+    };
+
+    const resetAllSelections = () => {
+        setCardData({
+            ...cardData,
+            objects: cardData.objects.map((obj: ObjectType): ObjectType => {
+                return { ...obj, isSelected: false };
+            }),
+        });
+    };
+
+    const addObject = (object: ObjectType) => {
+        setCardData({
+            ...cardData,
+            objects: [...cardData.objects, object],
+        });
+    };
+
+    const removeObject = (object: ObjectType) => {
+        setCardData({
+            ...cardData,
+            objects: cardData.objects.filter((obj: ObjectType) => {
+                return object.id !== obj.id;
+            }),
+        });
+    };
+
+    const setFilter = (filter: FilterType) => {
+        setCardData({
+            ...cardData,
+            filter: filter,
+        });
+    };
+
+    const selectedObject = cardData.objects.filter((obj: ObjectType) => {
+        return obj.isSelected;
+    })[0];
 
     return (
         <div className={classes.page}>
-            <TopToolbar cardData={cardData} setCardData={setCardData} />
+            <TopToolbar
+                cardData={cardData}
+                setCardData={setCardData}
+                addObject={addObject}
+                setFilter={setFilter}
+                filter={cardData.filter}
+            />
             <div className={classes.inlineContainer}>
-                <LeftToolbar />
-                <Canvas canvasProps={cardData.canvas} filter={cardData.filter}>
+                <LeftToolbar
+                    removeObject={removeObject}
+                    selectedObject={selectedObject}
+                    setObject={setObject}
+                />
+                <Canvas
+                    canvasProps={cardData.canvas}
+                    filter={cardData.filter}
+                    resetAllSelections={resetAllSelections}
+                >
                     {cardData.objects.map((object: ObjectType) => (
-                        <ObjectView key={object.id} object={object} />
+                        <ObjectView
+                            key={object.id}
+                            object={object}
+                            setObject={setObject}
+                            resetAllSelections={resetAllSelections}
+                        />
                     ))}
                 </Canvas>
             </div>

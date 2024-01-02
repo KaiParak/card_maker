@@ -4,7 +4,13 @@ import { DropDownButtons } from '../../common/DropdownButtons/DropdownButtons';
 import { Button } from '../../common/Button/Button';
 import { artObjectList } from '../../data/ArtObjectList/ArtObjectList';
 import { FilterBlock } from './FilterBlock/ui/FilterBlock';
-import { CardDataType } from '../../types/types';
+import {
+    CardDataType,
+    FilterType,
+    ImageType,
+    ObjectType,
+    TextType,
+} from '../../types/types';
 import { loadJson, saveJson } from './model/actionHandlers';
 
 type SaveActionType = 'jpeg' | 'png' | 'json';
@@ -12,12 +18,91 @@ type LoadActionType = 'json';
 const saveActions: SaveActionType[] = ['jpeg', 'png', 'json'];
 const loadActions: LoadActionType[] = ['json'];
 
+const createArtObject = (
+    src: string,
+    addObject: (object: ObjectType) => void
+) => {
+    addObject({
+        id: Date.now().toString(),
+        artSrc: src,
+        isSelected: false,
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+    });
+};
+
+const createTextBlock = (addObject: (object: ObjectType) => void) => {
+    const textObject: TextType = {
+        id: Date.now().toString(),
+        isSelected: false,
+        x: 0,
+        y: 0,
+        width: 200,
+        height: 100,
+        content: '',
+        fontColor: 'black',
+        fontSize: 20,
+        fontFamily: 'Arial',
+        decorations: [],
+    };
+
+    addObject(textObject);
+};
+
+const handleImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    addObject: (object: ObjectType) => void
+) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const base64Data = event.target?.result as string;
+
+        const image = new Image();
+        image.src = base64Data;
+
+        image.onload = () => {
+            const width = image.width;
+            const height = image.height;
+
+            const imageObject: ImageType = {
+                id: Date.now().toString(),
+                imageSrc: base64Data,
+                isSelected: false,
+                x: 0,
+                y: 0,
+                width: width,
+                height: height,
+            };
+
+            addObject(imageObject);
+        };
+    };
+    reader.readAsDataURL(file);
+};
+
 interface ITopToolbar {
     cardData: CardDataType;
     setCardData: (cardData: CardDataType) => void;
+    addObject: (object: ObjectType) => void;
+    setFilter: (filter: FilterType) => void;
+    filter: FilterType;
 }
 
-const TopToolbar = ({ cardData, setCardData }: ITopToolbar) => {
+const TopToolbar = ({
+    cardData,
+    setCardData,
+    addObject,
+    setFilter,
+    filter,
+}: ITopToolbar) => {
     const [notificationData, setNotificationData] = useState<{
         message: string;
         isVisible: boolean;
@@ -105,13 +190,21 @@ const TopToolbar = ({ cardData, setCardData }: ITopToolbar) => {
                         <input
                             id={'import-image'}
                             type={'file'}
+                            accept=".jpeg, .jpg, .png"
                             className={classes.input}
+                            onChange={(e) => handleImageUpload(e, addObject)}
                         />
-                        <label className={classes.inputLabel}>
+                        <label
+                            className={classes.inputLabel}
+                            htmlFor={'import-image'}
+                        >
                             Загрузить изображение
                         </label>
                     </div>
-                    <Button content={'Добавить текст'} onClick={() => {}} />
+                    <Button
+                        content={'Добавить текст'}
+                        onClick={() => createTextBlock(addObject)}
+                    />
                     <div className={classes.importArtObjectContainer}>
                         <h3 className={classes.importArtObjectTitle}>
                             Арт Объекты
@@ -119,7 +212,12 @@ const TopToolbar = ({ cardData, setCardData }: ITopToolbar) => {
                         <div className={classes.previewArtObjectsBlock}>
                             {artObjectList.map((src: string) => {
                                 return (
-                                    <div key={src} onClick={() => {}}>
+                                    <div
+                                        key={src}
+                                        onClick={() => {
+                                            createArtObject(src, addObject);
+                                        }}
+                                    >
                                         <img
                                             src={src}
                                             className={classes.previewArt}
@@ -129,7 +227,7 @@ const TopToolbar = ({ cardData, setCardData }: ITopToolbar) => {
                             })}
                         </div>
                     </div>
-                    <FilterBlock />
+                    <FilterBlock setFilter={setFilter} filter={filter} />
                 </div>
             </div>
         </>

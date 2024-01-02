@@ -75,6 +75,8 @@ export type {
     FilterType,
     CanvasType,
     CardDataType,
+    BoundingBoxType,
+    TextDecorationType,
 };
 
 export { isTextType, isArtType, isImageType };

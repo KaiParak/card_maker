@@ -6,13 +6,20 @@ interface ICanvas {
     canvasProps: CanvasType;
     filter: FilterType;
     children?: ReactNode;
+    resetAllSelections: () => void;
 }
 
-const Canvas = ({ canvasProps, filter, children }: ICanvas) => {
+const Canvas = ({
+    canvasProps,
+    filter,
+    children,
+    resetAllSelections,
+}: ICanvas) => {
     return (
         <div
             className={classes.canvas}
             style={{ width: canvasProps.width, height: canvasProps.height }}
+            onMouseDown={resetAllSelections}
         >
             {children}
             <div
