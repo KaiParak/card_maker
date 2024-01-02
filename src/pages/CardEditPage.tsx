@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     ArtType,
     CardDataType,
@@ -49,7 +49,7 @@ const CardEditPage = () => {
         artSrc: circle,
     };
 
-    const cardData: CardDataType = {
+    const [cardData, setCardData] = useState<CardDataType>({
         filter: {
             r: 255,
             g: 255,
@@ -61,11 +61,11 @@ const CardEditPage = () => {
             height: 600,
         },
         objects: [textObject, imageObject, artObject],
-    };
+    });
 
     return (
         <div className={classes.page}>
-            <TopToolbar />
+            <TopToolbar cardData={cardData} setCardData={setCardData} />
             <div className={classes.inlineContainer}>
                 <LeftToolbar />
                 <Canvas canvasProps={cardData.canvas} filter={cardData.filter}>
