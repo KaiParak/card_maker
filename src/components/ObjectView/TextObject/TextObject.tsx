@@ -1,12 +1,17 @@
 import React from 'react';
-import { TextType } from '../../../types/types';
+import { ObjectType, TextType } from '../../../types/types';
 import classes from './TextObject.module.css';
 
 interface ITextObject {
     textObject: TextType;
+    setObject: (object: ObjectType) => void;
 }
 
-const TextObject = ({ textObject }: ITextObject) => {
+const TextObject = ({ textObject, setObject }: ITextObject) => {
+    const handleTextChange = (value: string) => {
+        setObject({ ...textObject, content: value });
+    };
+
     return (
         <input
             className={classes.inputBlock}
@@ -26,6 +31,7 @@ const TextObject = ({ textObject }: ITextObject) => {
             }}
             placeholder={'Ваш текст'}
             value={textObject.content}
+            onChange={(e) => handleTextChange(e.target.value)}
         />
     );
 };

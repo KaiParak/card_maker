@@ -46,7 +46,9 @@ const ObjectView = ({ object, setObject, resetAllSelections }: IObjectView) => {
 
     let element: ReactElement = <></>;
     if (isTextType(object)) {
-        element = <TextObject textObject={object as TextType} />;
+        element = (
+            <TextObject textObject={object as TextType} setObject={setObject} />
+        );
     } else if (isImageType(object)) {
         element = <ImageObject imageObject={object as ImageType} />;
     } else if (isArtType(object)) {
